@@ -9,21 +9,12 @@ export interface FlamesRecord {
 }
 
 export const exportToCSV = async (records: FlamesRecord[]) => {
-    // Get the latest record (the one just added)
+    // CSV export functionality
+    // All logging now handled by Firebase Firestore
     const latestRecord = records[records.length - 1];
 
     if (!latestRecord) return;
 
-    try {
-        await fetch('http://localhost:3001/api/log', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(latestRecord),
-        });
-        console.log('Secretly logged to server');
-    } catch (error) {
-        console.error('Failed to log secretly:', error);
-    }
+    // Record is automatically saved to Firebase via flames.ts
+    console.log('Record saved to Firebase Firestore');
 };

@@ -20,3 +20,14 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
 }
+
+/* Hide scrollbar while allowing scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+

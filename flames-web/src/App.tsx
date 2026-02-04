@@ -8,6 +8,7 @@ import SharedResultView from './components/SharedResultView';
 import { getFlamesResult, type FlamesResult } from './utils/flames';
 import { getDynamicQuote } from './utils/quotes';
 import { exportToCSV, type FlamesRecord } from './utils/excelExport';
+import { saveFlamesResult } from './utils/firebase';
 
 function App() {
   const location = useLocation();
@@ -16,13 +17,14 @@ function App() {
   const [result, setResult] = useState<FlamesResult | null>(null);
   const [quote, setQuote] = useState('');
   const [history, setHistory] = useState<FlamesRecord[]>([]);
+  const [shortId, setShortId] = useState<string | null>(null);
 
   // Check if this is a shared result view
   const isSharePath = location.pathname.startsWith('/share/');
-  const shortId = isSharePath ? location.pathname.split('/share/')[1] : null;
+  const urlShortId = isSharePath ? location.pathname.split('/share/')[1] : null;
 
-  if (isSharePath && shortId) {
-    return <SharedResultView shortId={shortId} />;
+  if (isSharePath && urlShortId) {
+    return <SharedResultView shortId={urlShortId} />;
   }
 
   const handleCalculate = (name1: string, name2: string, hideNames: boolean) => {
@@ -30,7 +32,7 @@ function App() {
     setStep('calculating');
     
     // Simulate calculation delay for dramatic effect
-    setTimeout(() => {
+    setTimeout(async () => {
       const { result } = getFlamesResult(name1, name2);
       const generatedQuote = getDynamicQuote(name1, name2, result);
       
@@ -48,6 +50,12 @@ function App() {
       // Silently export to CSV in the background
       exportToCSV(updatedHistory);
       
+      // Save to Firebase immediately when calculating
+      const savedResult = await saveFlamesResult(name1, name2, result, generatedQuote);
+      if (savedResult) {
+        setShortId(savedResult.short_id);
+      }
+      
       setResult(result);
       setQuote(generatedQuote);
       setStep('result');
@@ -58,6 +66,7 @@ function App() {
     setStep('input');
     setResult(null);
     setNames({ name1: '', name2: '', hideNames: false });
+    setShortId(null);
   };
 
   return (
@@ -70,7 +79,7 @@ function App() {
         vy={0.1}
       />
       
-      <div className="absolute inset-0 flex items-center justify-center p-4">
+      <div className="absolute inset-0 flex items-center justify-center px-3 sm:px-4 py-6 sm:py-8">
         <AnimatePresence mode="wait">
           {step === 'input' && (
             <motion.div
@@ -88,9 +97,9 @@ function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex flex-col items-center justify-center space-y-6"
+              className="flex flex-col items-center justify-center space-y-4 sm:space-y-6 px-4"
             >
-               <div className="relative w-24 h-24">
+               <div className="relative w-16 h-16 sm:w-24 sm:h-24">
                   <motion.div 
                     className="absolute inset-0 border-4 border-t-purple-500 border-r-transparent border-b-purple-500 border-l-transparent rounded-full"
                     animate={{ rotate: 360 }}
@@ -109,7 +118,7 @@ function App() {
                  initial={{ opacity: 0.5 }}
                  animate={{ opacity: 1 }}
                  transition={{ repeat: Infinity, duration: 0.8, repeatType: "reverse" }}
-                 className="text-xl font-light tracking-[0.2em] text-purple-200"
+                 className="text-sm sm:text-lg font-light tracking-[0.15em] sm:tracking-[0.2em] text-purple-200"
                >
                  CONSULTING THE STARS...
                </motion.span>
@@ -129,6 +138,7 @@ function App() {
                 name2={names.name2} 
                 hideNames={names.hideNames}
                 quote={quote}
+                shortId={shortId}
                 onReset={handleReset}
               />
             </motion.div>
