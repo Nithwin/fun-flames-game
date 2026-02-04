@@ -85,7 +85,7 @@ const InputForm: React.FC<InputFormProps> = ({ onCalculate }) => {
                 <motion.button
                     whileHover={{ scale: 1.02, boxShadow: "0 0 20px rgba(168, 85, 247, 0.4)" }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-bold text-white shadow-lg text-lg uppercase tracking-wider relative overflow-hidden group"
+                    className="w-full py-4 bg-linear-to-r from-purple-600 to-pink-600 rounded-xl font-bold text-white shadow-lg text-lg uppercase tracking-wider relative overflow-hidden group"
                 >
                     <span className="relative z-10">Calculate Destiny</span>
                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>

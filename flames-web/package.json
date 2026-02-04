@@ -6,24 +6,22 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
     "preview": "vite preview",
-    "server": "node server.js",
-    "dev:full": "concurrently \"vite\" \"node server.js\""
+    "lint": "eslint .",
+    "export-data": "node exportFlamesData.js"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
     "@types/three": "^0.182.0",
-    "body-parser": "^2.2.2",
     "clsx": "^2.1.1",
-    "concurrently": "^9.2.1",
-    "cors": "^2.8.6",
-    "express": "^5.2.1",
+    "firebase": "^10.7.0",
     "framer-motion": "^12.31.0",
     "lucide-react": "^0.563.0",
+    "qrcode.react": "^3.1.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-router-dom": "^7.1.5",
     "tailwind-merge": "^3.4.0",
     "three": "^0.182.0"
   },

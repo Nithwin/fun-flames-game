@@ -1,16 +1,29 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import ParticlesBackground from './components/ParticlesBackground';
 import InputForm from './components/InputForm';
 import ResultCard from './components/ResultCard';
+import SharedResultView from './components/SharedResultView';
 import { getFlamesResult, type FlamesResult } from './utils/flames';
+import { getDynamicQuote } from './utils/quotes';
 import { exportToCSV, type FlamesRecord } from './utils/excelExport';
 
 function App() {
+  const location = useLocation();
   const [step, setStep] = useState<'input' | 'calculating' | 'result'>('input');
   const [names, setNames] = useState<{ name1: string; name2: string; hideNames: boolean }>({ name1: '', name2: '', hideNames: false });
   const [result, setResult] = useState<FlamesResult | null>(null);
+  const [quote, setQuote] = useState('');
   const [history, setHistory] = useState<FlamesRecord[]>([]);
+
+  // Check if this is a shared result view
+  const isSharePath = location.pathname.startsWith('/share/');
+  const shortId = isSharePath ? location.pathname.split('/share/')[1] : null;
+
+  if (isSharePath && shortId) {
+    return <SharedResultView shortId={shortId} />;
+  }
 
   const handleCalculate = (name1: string, name2: string, hideNames: boolean) => {
     setNames({ name1, name2, hideNames });
@@ -19,6 +32,7 @@ function App() {
     // Simulate calculation delay for dramatic effect
     setTimeout(() => {
       const { result } = getFlamesResult(name1, name2);
+      const generatedQuote = getDynamicQuote(name1, name2, result);
       
       const newRecord: FlamesRecord = {
           id: Date.now().toString(),
@@ -35,6 +49,7 @@ function App() {
       exportToCSV(updatedHistory);
       
       setResult(result);
+      setQuote(generatedQuote);
       setStep('result');
     }, 2000);
   };
@@ -46,7 +61,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen text-white overflow-hidden relative font-sans bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+    <div className="min-h-screen text-white overflow-hidden relative font-sans bg-linear-to-br from-slate-950 via-purple-950 to-slate-950">
       <ParticlesBackground 
         className="absolute inset-0 -z-10"
         quantity={150}
@@ -113,6 +128,7 @@ function App() {
                 name1={names.name1} 
                 name2={names.name2} 
                 hideNames={names.hideNames}
+                quote={quote}
                 onReset={handleReset}
               />
             </motion.div>
