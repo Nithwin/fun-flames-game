@@ -1,5 +1,5 @@
 {
-  "name": "flames-web",
+  "name": "aura-flames",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -18,7 +18,7 @@
     "firebase": "^10.7.0",
     "framer-motion": "^12.31.0",
     "lucide-react": "^0.563.0",
-    "qrcode.react": "^3.1.0",
+    "qrcode": "^1.5.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.1.5",
@@ -29,6 +29,7 @@
     "@eslint/js": "^9.39.1",
     "@tailwindcss/vite": "^4.1.18",
     "@types/node": "^24.10.1",
+    "@types/qrcode": "^1.5.5",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",

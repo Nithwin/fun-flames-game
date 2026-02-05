@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Flame, Eye, EyeOff, RotateCcw } from 'lucide-react';
-import TiltWrapper from './TiltWrapper';
+import { Flame, Eye, EyeOff, Sparkles } from 'lucide-react';
+import TiltWrapper from './TiltWrapper'; // Import TiltWrapper
 
 interface InputFormProps {
     onCalculate: (name1: string, name2: string, hideNames: boolean) => void;
@@ -19,80 +19,121 @@ const InputForm: React.FC<InputFormProps> = ({ onCalculate }) => {
         }
     };
 
-    const handleClear = () => {
-        setName1('');
-        setName2('');
-    };
-
     return (
-        <TiltWrapper>
         <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative z-10 w-full max-w-sm px-4 py-6 sm:px-8 sm:py-8 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 shadow-xl"
+            transition={{ duration: 0.4 }}
+            className="relative z-10 w-full max-w-2xl mx-auto px-4"
         >
-            <div className="flex justify-between items-start mb-4 sm:mb-6">
-                 <button 
-                    type="button"
-                    onClick={handleClear}
-                    className="p-2 bg-white/5 rounded-lg hover:bg-white/10 text-white/50 hover:text-white transition-colors"
-                    title="Clear Inputs"
-                 >
-                     <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
-                 </button>
+            <TiltWrapper>
+            {/* Dark Glassmorphism Card - Full Width */}
+            <div className="relative bg-white/10 backdrop-blur-2xl rounded-3xl border border-white/20 shadow-2xl overflow-hidden transform-style-3d">
+                {/* Animated gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-violet-500/10 opacity-50" />
+                
+                {/* Content */}
+                <div className="relative p-5 sm:p-8 md:p-10">
+                    {/* Header */}
+                    <div className="text-center mb-8">
+                        <motion.div
+                            initial={{ scale: 0, rotate: -180 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
+                            className="inline-flex items-center justify-center mb-4 transform hover:rotate-12 transition-transform duration-500"
+                        >
+                            <div className="p-3 sm:p-4 bg-gradient-to-br from-purple-600/30 to-pink-600/30 rounded-full border border-white/30 shadow-lg shadow-purple-500/20">
+                                <Flame className="w-8 h-8 sm:w-12 sm:h-12 text-white drop-shadow-lg" />
+                            </div>
+                        </motion.div>
+                        
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-2 tracking-tight">
+                            <span className="bg-gradient-to-r from-purple-300 via-pink-300 to-violet-300 bg-clip-text text-transparent drop-shadow-lg filter">
+                                Aura Flames
+                            </span>
+                        </h1>
+                        
+                        <p className="text-white/60 text-sm md:text-base flex items-center justify-center gap-2">
+                            <Sparkles className="w-4 h-4 text-purple-300" />
+                            Discover your cosmic connection
+                        </p>
+                    </div>
 
-                <div className="p-2 sm:p-3 bg-purple-600/20 rounded-full border border-purple-500/30">
-                    <Flame className="w-7 h-7 sm:w-10 sm:h-10 text-purple-400" />
+                    {/* Form - Full Width Layout */}
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        {/* Inputs in Row on Desktop */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                            {/* Name 1 Input */}
+                            <div>
+                                <label className="block text-sm font-semibold text-purple-300 mb-2 uppercase tracking-wide transform translate-z-5">
+                                    Your Name
+                                </label>
+                                <input
+                                    type={hideNames ? "password" : "text"}
+                                    value={name1}
+                                    onChange={(e) => setName1(e.target.value)}
+                                    placeholder="Enter your name..."
+                                    className="w-full px-4 py-3 sm:py-4 bg-black/30 border-2 border-white/10 focus:border-purple-500 rounded-2xl focus:outline-none text-base sm:text-lg text-white placeholder-white/30 transition-all duration-300 font-medium hover:bg-black/40"
+                                />
+                            </div>
+
+                            {/* Name 2 Input */}
+                            <div>
+                                <label className="block text-sm font-semibold text-pink-300 mb-2 uppercase tracking-wide transform translate-z-5">
+                                    Partner's Name
+                                </label>
+                                <input
+                                    type={hideNames ? "password" : "text"}
+                                    value={name2}
+                                    onChange={(e) => setName2(e.target.value)}
+                                    placeholder="Enter partner's name..."
+                                    className="w-full px-4 py-3 sm:py-4 bg-black/30 border-2 border-white/10 focus:border-pink-500 rounded-2xl focus:outline-none text-base sm:text-lg text-white placeholder-white/30 transition-all duration-300 font-medium hover:bg-black/40"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Privacy Toggle & Submit Button Row */}
+                        <div className="flex flex-col md:flex-row items-center gap-4">
+                            {/* Privacy Toggle */}
+                            <button
+                                type="button"
+                                onClick={() => setHideNames(!hideNames)}
+                                className={`flex items-center gap-2 px-5 py-3 rounded-full transition-all duration-300 hover:scale-105 ${
+                                    hideNames 
+                                        ? 'bg-purple-600/30 border-2 border-purple-500/50' 
+                                        : 'bg-white/5 border-2 border-white/10 hover:bg-white/10'
+                                }`}
+                            >
+                                {hideNames ? (
+                                    <EyeOff className="w-5 h-5 text-purple-300" />
+                                ) : (
+                                    <Eye className="w-5 h-5 text-white/50" />
+                                )}
+                                <span className="text-sm font-medium text-white">
+                                    {hideNames ? 'Hidden' : 'Visible'}
+                                </span>
+                            </button>
+
+                            {/* Submit Button */}
+                             <motion.button
+                                type="submit"
+                                disabled={!name1.trim() || !name2.trim()}
+                                whileHover={{ scale: 1.02, translateY: -2 }}
+                                whileTap={{ scale: 0.98 }}
+                                className="flex-1 w-full md:w-auto py-3 sm:py-4 px-8 bg-gradient-to-r from-purple-600 via-pink-600 to-violet-600 rounded-2xl font-bold text-white text-base sm:text-lg uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-purple-500/30 transition-all duration-300 border border-white/20"
+                            >
+                                <span className="flex items-center justify-center gap-2">
+                                    <Sparkles className="w-5 h-5 animate-pulse" />
+                                    Calculate Destiny
+                                    <Sparkles className="w-5 h-5 animate-pulse" />
+                                </span>
+                            </motion.button>
+                        </div>
+                    </form>
                 </div>
-
-                <button 
-                    type="button"
-                    onClick={() => setHideNames(!hideNames)}
-                    className="p-2 bg-white/5 rounded-lg hover:bg-white/10 text-white/50 hover:text-white transition-colors"
-                    title={hideNames ? "Show Names" : "Hide Names"}
-                 >
-                     {hideNames ? <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Eye className="w-4 h-4 sm:w-5 sm:h-5" />}
-                 </button>
             </div>
-            
-            <h2 className="text-2xl sm:text-3xl font-bold text-center text-white mb-6 sm:mb-8 tracking-wide">
-                Cosmic Flames
-            </h2>
-
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-                <div className="space-y-2">
-                    <label className="text-xs sm:text-sm font-medium text-purple-200 ml-1">Your Name</label>
-                    <input
-                        type={hideNames ? "password" : "text"}
-                        value={name1}
-                        onChange={(e) => setName1(e.target.value)}
-                        placeholder="Enter name..."
-                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-black/20 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm sm:text-base text-white placeholder-white/30 transition-all font-medium"
-                    />
-                </div>
-
-                <div className="space-y-2">
-                    <label className="text-xs sm:text-sm font-medium text-pink-200 ml-1">Partner's Name</label>
-                    <input
-                        type={hideNames ? "password" : "text"}
-                        value={name2}
-                        onChange={(e) => setName2(e.target.value)}
-                        placeholder="Enter partner's name..."
-                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-black/20 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm sm:text-base text-white placeholder-white/30 transition-all font-medium"
-                    />
-                </div>
-
-                <motion.button
-                    whileHover={{ scale: 1.02, boxShadow: "0 0 20px rgba(168, 85, 247, 0.4)" }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full py-3 sm:py-4 bg-linear-to-r from-purple-600 to-pink-600 rounded-xl font-bold text-white shadow-lg text-sm sm:text-lg uppercase tracking-wider relative overflow-hidden group"
-                >
-                    <span className="relative z-10">Calculate Destiny</span>
-                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                </motion.button>
-            </form>
+            </TiltWrapper>
         </motion.div>
-        </TiltWrapper>
     );
 };
 

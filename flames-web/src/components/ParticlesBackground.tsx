@@ -11,6 +11,8 @@ interface ParticlesBackgroundProps {
   color?: string;
   vx?: number;
   vy?: number;
+  onParticleHit?: () => void;
+  interactive?: boolean;
 }
 
 interface Circle {
@@ -44,6 +46,8 @@ const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({
   color = "#ffffff",
   vx = 0,
   vy = 0,
+  onParticleHit,
+  interactive = false,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
@@ -236,6 +240,43 @@ const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({
         }
   }, []);
 
+  const handlePointerDown = useCallback((clientX: number, clientY: number) => {
+    if (!canvasRef.current || !interactive || !onParticleHit) return;
+    
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+    // Check if any circle was hit
+    let hit = false;
+    circles.current = circles.current.filter((circle) => {
+      const dx = circle.x - x;
+      const dy = circle.y - y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      
+      // Threshold for "hit" - 30px is generous for mobile
+      if (distance < 30) {
+        hit = true;
+        return false; // Remove this particle
+      }
+      return true;
+    });
+
+    if (hit) {
+      onParticleHit();
+      // Draw a replacement particle immediately
+      drawParticles();
+    }
+  }, [interactive, onParticleHit, drawParticles]);
+
+  const handleMouseDown = useCallback((e: MouseEvent) => {
+    handlePointerDown(e.clientX, e.clientY);
+  }, [handlePointerDown]);
+
+  const handleTouchStart = useCallback((e: TouchEvent) => {
+    handlePointerDown(e.touches[0].clientX, e.touches[0].clientY);
+  }, [handlePointerDown]);
+
   useEffect(() => {
     if (canvasRef.current) {
       context.current = canvasRef.current.getContext("2d");
@@ -244,13 +285,22 @@ const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({
     animate();
     window.addEventListener("resize", initCanvas);
     window.addEventListener("mousemove", handleMouseMove);
+    
+    if (interactive) {
+      canvasRef.current?.addEventListener("mousedown", handleMouseDown);
+      canvasRef.current?.addEventListener("touchstart", handleTouchStart);
+    }
 
     return () => {
       window.removeEventListener("resize", initCanvas);
       window.removeEventListener("mousemove", handleMouseMove);
+      if (interactive) {
+        canvasRef.current?.removeEventListener("mousedown", handleMouseDown);
+        canvasRef.current?.removeEventListener("touchstart", handleTouchStart);
+      }
       window.cancelAnimationFrame(requestRef.current);
     };
-  }, [initCanvas, animate, handleMouseMove]); // All dependencies are now stable
+  }, [initCanvas, animate, handleMouseMove, handleMouseDown, handleTouchStart, interactive]);
 
   useEffect(() => {
     initCanvas();
