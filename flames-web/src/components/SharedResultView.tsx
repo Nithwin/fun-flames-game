@@ -6,6 +6,9 @@ import { fetchSharedResult, type FlamesShare } from '../utils/firebase';
 import { Heart, Sparkles, Home, Play } from 'lucide-react';
 import TiltWrapper from './TiltWrapper';
 import { useCosmicAudio } from '../hooks/useCosmicAudio';
+import CursorTrail from './CursorTrail';
+import ConfettiOverlay from './ConfettiOverlay';
+import FloatingCosmicElements from './FloatingCosmicElements';
 
 interface SharedResultViewProps {
   shortId: string | null;
@@ -209,6 +212,12 @@ const SharedResultView: React.FC<SharedResultViewProps> = ({ shortId, fallbackDa
 
     return (
         <div className="min-h-screen text-white overflow-hidden relative font-sans bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+            <CursorTrail />
+            <ConfettiOverlay 
+                active={isRevealed && data !== null && ['Lovers', 'Marriage', 'Friends', 'Affectionate'].includes(data.result)} 
+                type={data?.result === 'Lovers' || data?.result === 'Marriage' ? 'hearts' : 'mixed'}
+            />
+            <FloatingCosmicElements />
             <ParticlesBackground 
                 className="absolute inset-0 -z-10"
                 quantity={150}

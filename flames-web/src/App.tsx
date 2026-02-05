@@ -6,6 +6,9 @@ import InputForm from './components/InputForm';
 import ResultCard from './components/ResultCard';
 import ResultReveal from './components/ResultReveal';
 import SharedResultView from './components/SharedResultView';
+import CursorTrail from './components/CursorTrail';
+import ConfettiOverlay from './components/ConfettiOverlay';
+import FloatingCosmicElements from './components/FloatingCosmicElements';
 import { getFlamesResult, type FlamesResult } from './utils/flames';
 import { getDynamicQuote } from './utils/quotes';
 import { exportToCSV, type FlamesRecord } from './utils/excelExport';
@@ -116,6 +119,12 @@ function App() {
 
   return (
     <div className="min-h-screen text-white overflow-hidden relative font-sans bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+      <CursorTrail />
+      <ConfettiOverlay 
+        active={step === 'result' && ['Lovers', 'Marriage', 'Friends', 'Affectionate'].includes(result || '')} 
+        type={result === 'Lovers' || result === 'Marriage' ? 'hearts' : 'mixed'} 
+      />
+      <FloatingCosmicElements />
       <ParticlesBackground 
         className="absolute inset-0 -z-10"
         quantity={150}
